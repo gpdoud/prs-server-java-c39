@@ -66,16 +66,16 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public boolean getReviewer() {
+	public boolean getIsReviewer() {
 		return isReviewer;
 	}
-	public void setReviewer(boolean isReviewer) {
+	public void setIsReviewer(boolean isReviewer) {
 		this.isReviewer = isReviewer;
 	}
-	public boolean getAdmin() {
+	public boolean getIsAdmin() {
 		return isAdmin;
 	}
-	public void setAdmin(boolean isAdmin) {
+	public void setIsAdmin(boolean isAdmin) {
 		this.isAdmin = isAdmin;
 	}
 	
