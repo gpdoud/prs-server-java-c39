@@ -1,6 +1,6 @@
 package com.maxtrain.bootcamp.java.prs.requestline;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.*;
 import com.maxtrain.bootcamp.java.prs.product.Product;
 import com.maxtrain.bootcamp.java.prs.request.Request;
 
@@ -16,6 +16,7 @@ public class Requestline {
 	private int quantity;
 	
 	@JsonBackReference
+	//@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 	@ManyToOne(optional=false)
 	@JoinColumn(name="requestId")
 	private Request request;
