@@ -11,6 +11,11 @@ import jakarta.persistence.*;
 @Entity
 @Table(name="requests")
 public class Request {
+	
+	public static final String STATUS_NEW 		= "NEW";
+	public static final String STATUS_REVIEW 	= "REVIEW";
+	public static final String STATUS_APPROVED 	= "APPROVED";
+	public static final String STATUS_REJECTED 	= "REJECTED";
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
