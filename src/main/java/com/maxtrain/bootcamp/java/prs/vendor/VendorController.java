@@ -41,27 +41,43 @@ public class VendorController {
 		for(Product product : products) {
 			dictProducts.put(product.getId(), product);
 		}
-		// get approved requests
-		
+		// get approved requests	
 		Iterable<Request> requests = reqRepo.findByStatus(Request.STATUS_APPROVED);
+		// get the request lines from approved requests
+		ArrayList<Requestline> requestlinesFromApprovedRequests = new ArrayList<Requestline>();
 		for(Request request : requests) {
 			// get requestlines from approved requests
 			Iterable<Requestline> reqlines = reqlRepo.findByRequestId(request.getId());
-			for(Requestline requestline : reqlines) {
-				int prodId = requestline.getProduct().getId();
-				if(dictProducts.containsKey(prodId)) {
-					Poline poline = new Poline();
-					poline.setId(requestline.getId());
-					poline.setProductId(requestline.getProduct().getId());
-					poline.setProductName(requestline.getProduct().getName());
-					poline.setProductPrice(requestline.getProduct().getPrice());
-					poline.setQuantity(requestline.getQuantity());
-					double lineTotal = requestline.getQuantity() * requestline.getProduct().getPrice();
-					poline.setLineTotal(lineTotal);
-					po.setTotal(po.getTotal() + lineTotal);
-					po.getPolines().add(poline);
-				}
+			for(Requestline rl : reqlines) {
+				requestlinesFromApprovedRequests.add(rl);
 			}
+		}
+		// eliminate request lines with products from another vendor
+		ArrayList<Requestline> requestlinesFromVendor = new ArrayList<Requestline>();
+		for(Requestline rl : requestlinesFromApprovedRequests) {
+			if(dictProducts.containsKey(rl.getProduct().getId())) {
+				requestlinesFromVendor.add(rl);
+			}
+		}
+		// the request lines that have products from the selected vendor
+		// can be used to calculate the total
+		for(Requestline requestline : requestlinesFromVendor) {
+			// the Po instance was created above
+			// create a new Poline
+			Poline poline = new Poline();
+			// fill it with data (this Id can be omitted)
+			poline.setId(requestline.getId());
+			poline.setProductId(requestline.getProduct().getId());
+			poline.setProductName(requestline.getProduct().getName());
+			poline.setProductPrice(requestline.getProduct().getPrice());
+			poline.setQuantity(requestline.getQuantity());
+			// calculate the line total by multiplying the quantity times the price
+			double lineTotal = requestline.getQuantity() * requestline.getProduct().getPrice();
+			poline.setLineTotal(lineTotal);
+			// add new new Poline to the Po.polines collection
+			po.getPolines().add(poline);
+			// accumulate the request total by adding the line total
+			po.setTotal(po.getTotal() + lineTotal);
 		}
 		
 		return new ResponseEntity<Po>(po, HttpStatus.OK);
